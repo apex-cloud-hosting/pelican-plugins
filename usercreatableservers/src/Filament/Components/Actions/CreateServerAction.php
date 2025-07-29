@@ -55,6 +55,13 @@ class CreateServerAction extends Action
                     ->required()
                     ->searchable()
                     ->preload(),
+                TextInput::make('cpu')
+                    ->label(trans('usercreatableservers::strings.cpu'))
+                    ->required()
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue($userResourceLimits->getCpuLeft())
+                    ->suffix('%'),
                 TextInput::make('memory')
                     ->label(trans('usercreatableservers::strings.memory'))
                     ->required()
@@ -69,13 +76,6 @@ class CreateServerAction extends Action
                     ->minValue(1)
                     ->maxValue($userResourceLimits->getDiskLeft())
                     ->suffix(config('panel.use_binary_prefix') ? 'MiB' : 'MB'),
-                TextInput::make('cpu')
-                    ->label(trans('usercreatableservers::strings.cpu'))
-                    ->required()
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue($userResourceLimits->getCpuLeft())
-                    ->suffix('%'),
             ];
         });
 
@@ -84,7 +84,7 @@ class CreateServerAction extends Action
                 /** @var UserResourceLimits $userResourceLimits */
                 $userResourceLimits = UserResourceLimits::where('user_id', auth()->user()->id)->firstOrFail();
 
-                if ($server = $userResourceLimits->createServer($data['name'], $data['egg_id'], $data['memory'], $data['disk'], $data['cpu'])) {
+                if ($server = $userResourceLimits->createServer($data['name'], $data['egg_id'], $data['cpu'], $data['memory'], $data['disk'])) {
                     redirect(Console::getUrl(panel: 'server', tenant: $server));
                 }
             } catch (Exception $exception) {

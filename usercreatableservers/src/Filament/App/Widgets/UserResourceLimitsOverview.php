@@ -16,14 +16,15 @@ class UserResourceLimitsOverview extends StatsOverviewWidget
         $userServers = auth()->user()->servers;
 
         $suffix = config('panel.use_binary_prefix') ? ' MiB' : ' MB';
-        $memory = $userServers->sum('memory') . "{$suffix} / " . ($userResourceLimits->memory > 0 ? "{$userResourceLimits->memory}{$suffix}" : '∞');
-        $disk = $userServers->sum('disk') . "{$suffix} / " . ($userResourceLimits->memordisky > 0 ? "{$userResourceLimits->disk}{$suffix}" : '∞');
+
         $cpu = $userServers->sum('cpu') . '% / ' . ($userResourceLimits->cpu > 0 ? "{$userResourceLimits->cpu}%" : '∞');
+        $memory = $userServers->sum('memory') . "{$suffix} / " . ($userResourceLimits->memory > 0 ? "{$userResourceLimits->memory}{$suffix}" : '∞');
+        $disk = $userServers->sum('disk') . "{$suffix} / " . ($userResourceLimits->disk > 0 ? "{$userResourceLimits->disk}{$suffix}" : '∞');
 
         return [
+            Stat::make(trans('usercreatableservers::strings.cpu'), $cpu),
             Stat::make(trans('usercreatableservers::strings.memory'), $memory),
             Stat::make(trans('usercreatableservers::strings.disk'), $disk),
-            Stat::make(trans('usercreatableservers::strings.cpu'), $cpu),
         ];
     }
 

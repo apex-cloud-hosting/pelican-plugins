@@ -52,24 +52,26 @@ class UserResourceLimitsResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $suffix = config('panel.use_binary_prefix') ? ' MiB' : ' MB';
+
         return $table
             ->columns([
                 TextColumn::make('user.username')
                     ->label(trans_choice('usercreatableservers::strings.user', 1))
                     ->icon('tabler-user')
                     ->url(fn (UserResourceLimits $userResourceLimits) => auth()->user()->can('update', $userResourceLimits->user) ? EditUser::getUrl(['record' => $userResourceLimits->user]) : null),
-                TextColumn::make('memory')
-                    ->label(trans('usercreatableservers::strings.memory'))
-                    ->badge()
-                    ->suffix(config('panel.use_binary_prefix') ? ' MiB' : ' MB'),
-                TextColumn::make('disk')
-                    ->label(trans('usercreatableservers::strings.disk'))
-                    ->badge()
-                    ->suffix(config('panel.use_binary_prefix') ? ' MiB' : ' MB'),
                 TextColumn::make('cpu')
                     ->label(trans('usercreatableservers::strings.cpu'))
                     ->badge()
-                    ->suffix('%'),
+                    ->formatStateUsing(fn ($state) => $state > 0 ? $state . '%' : trans('usercreatableservers::strings.unlimited')),
+                TextColumn::make('memory')
+                    ->label(trans('usercreatableservers::strings.memory'))
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state > 0 ? $state . $suffix : trans('usercreatableservers::strings.unlimited')),
+                TextColumn::make('disk')
+                    ->label(trans('usercreatableservers::strings.disk'))
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state > 0 ? $state . $suffix : trans('usercreatableservers::strings.unlimited')),
             ])
             ->actions([
                 ActionGroup::make([
@@ -96,6 +98,14 @@ class UserResourceLimitsResource extends Resource
                     ->getOptionLabelFromRecordUsing(fn (User $user) => "$user->username ($user->email)")
                     ->selectablePlaceholder(false)
                     ->hiddenOn('edit'),
+                TextInput::make('cpu')
+                    ->label(trans('usercreatableservers::strings.cpu'))
+                    ->required()
+                    ->numeric()
+                    ->minValue(0)
+                    ->default(0)
+                    ->suffix('%')
+                    ->hint(trans('usercreatableservers::strings.hint_unlimited')),
                 TextInput::make('memory')
                     ->label(trans('usercreatableservers::strings.memory'))
                     ->required()
@@ -112,14 +122,6 @@ class UserResourceLimitsResource extends Resource
                     ->default(0)
                     ->suffix(config('panel.use_binary_prefix') ? 'MiB' : 'MB')
                     ->hint(trans('usercreatableservers::strings.hint_unlimited')),
-                TextInput::make('cpu')
-                    ->label(trans('usercreatableservers::strings.cpu'))
-                    ->required()
-                    ->numeric()
-                    ->minValue(0)
-                    ->default(0)
-                    ->suffix('%')
-                    ->hint(trans('usercreatableservers::strings.hint_unlimited')),
                 TextInput::make('server_limit')
                     ->label(trans('usercreatableservers::strings.server_limit'))
                     ->numeric()
@@ -135,14 +137,14 @@ class UserResourceLimitsResource extends Resource
                 TextEntry::make('user.username')
                     ->label(trans_choice('usercreatableservers::strings.user', 1))
                     ->columnSpanFull(),
+                TextEntry::make('cpu')
+                    ->label(trans('usercreatableservers::strings.cpu'))
+                    ->badge(),
                 TextEntry::make('memory')
                     ->label(trans('usercreatableservers::strings.memory'))
                     ->badge(),
                 TextEntry::make('disk')
                     ->label(trans('usercreatableservers::strings.disk'))
-                    ->badge(),
-                TextEntry::make('cpu')
-                    ->label(trans('usercreatableservers::strings.cpu'))
                     ->badge(),
                 TextEntry::make('server_limit')
                     ->label(trans('usercreatableservers::strings.server_limit'))

@@ -14,10 +14,7 @@
     "update_url": null,
     "namespace": "Boy132\\UserCreatableServers",
     "class": "UserCreatableServersPlugin",
-    "panels": [
-        "admin",
-        "app"
-    ],
+    "panels": null,
     "panel_version": null,
     "composer_packages": null
 }

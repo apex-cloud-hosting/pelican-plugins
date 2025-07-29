@@ -44,6 +44,10 @@ class UserResourceLimitRelationManager extends RelationManager
         return $table
             ->heading(trans_choice('usercreatableservers::strings.user_resource_limits', 2))
             ->columns([
+                TextColumn::make('cpu')
+                    ->label(trans('usercreatableservers::strings.cpu'))
+                    ->badge()
+                    ->suffix('%'),
                 TextColumn::make('memory')
                     ->label(trans('usercreatableservers::strings.memory'))
                     ->badge()
@@ -52,10 +56,6 @@ class UserResourceLimitRelationManager extends RelationManager
                     ->label(trans('usercreatableservers::strings.disk'))
                     ->badge()
                     ->suffix(config('panel.use_binary_prefix') ? ' MiB' : ' MB'),
-                TextColumn::make('cpu')
-                    ->label(trans('usercreatableservers::strings.cpu'))
-                    ->badge()
-                    ->suffix('%'),
             ])
             ->actions([
                 ActionGroup::make([
@@ -73,6 +73,14 @@ class UserResourceLimitRelationManager extends RelationManager
     {
         return $form
             ->schema([
+                TextInput::make('cpu')
+                    ->label(trans('usercreatableservers::strings.cpu'))
+                    ->required()
+                    ->numeric()
+                    ->minValue(0)
+                    ->default(0)
+                    ->suffix('%')
+                    ->hint(trans('usercreatableservers::strings.hint_unlimited')),
                 TextInput::make('memory')
                     ->label(trans('usercreatableservers::strings.memory'))
                     ->required()
@@ -88,14 +96,6 @@ class UserResourceLimitRelationManager extends RelationManager
                     ->minValue(0)
                     ->default(0)
                     ->suffix(config('panel.use_binary_prefix') ? 'MiB' : 'MB')
-                    ->hint(trans('usercreatableservers::strings.hint_unlimited')),
-                TextInput::make('cpu')
-                    ->label(trans('usercreatableservers::strings.cpu'))
-                    ->required()
-                    ->numeric()
-                    ->minValue(0)
-                    ->default(0)
-                    ->suffix('%')
                     ->hint(trans('usercreatableservers::strings.hint_unlimited')),
                 TextInput::make('server_limit')
                     ->label(trans('usercreatableservers::strings.server_limit'))
