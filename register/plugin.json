@@ -1,9 +1,4 @@
 {
-    "meta": {
-        "status": "enabled",
-        "status_message": null,
-        "load_order": 0
-    },
     "id": "register",
     "name": "Register",
     "author": "Boy132",

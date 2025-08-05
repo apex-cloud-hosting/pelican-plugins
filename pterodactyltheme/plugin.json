@@ -1,9 +1,4 @@
 {
-    "meta": {
-        "status": "disabled",
-        "status_message": null,
-        "load_order": 0
-    },
     "id": "pterodactyltheme",
     "name": "Pterodactyl Theme",
     "author": "Boy132",
