@@ -1,0 +1,15 @@
+{
+    "id": "user-creatable-servers",
+    "name": "User Creatable Servers",
+    "author": "Boy132",
+    "version": "1.0.0",
+    "description": "Allow users to create their own servers",
+    "category": "plugin",
+    "url": "https://github.com/pelican-dev/plugins/tree/main/user-creatable-servers",
+    "update_url": null,
+    "namespace": "Boy132\\UserCreatableServers",
+    "class": "UserCreatableServersPlugin",
+    "panels": null,
+    "panel_version": null,
+    "composer_packages": null
+}
