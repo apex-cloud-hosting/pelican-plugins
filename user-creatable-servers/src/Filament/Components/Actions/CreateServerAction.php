@@ -38,7 +38,7 @@ class CreateServerAction extends Action
             return !$userResourceLimits->canCreateServer(1, 1, 1);
         });
 
-        $this->form(function () {
+        $this->schema(function () {
             /** @var UserResourceLimits $userResourceLimits */
             $userResourceLimits = UserResourceLimits::where('user_id', auth()->user()->id)->firstOrFail();
 

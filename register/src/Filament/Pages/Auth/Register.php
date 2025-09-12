@@ -2,8 +2,8 @@
 
 namespace Boy132\Register\Filament\Pages\Auth;
 
-use Filament\Forms\Components\Component;
-use Filament\Pages\Auth\Register as BaseRegister;
+use Filament\Auth\Pages\Register as BaseRegister;
+use Filament\Schemas\Components\Component;
 
 class Register extends BaseRegister
 {

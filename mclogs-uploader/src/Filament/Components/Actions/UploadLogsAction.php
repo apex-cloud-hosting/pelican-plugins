@@ -2,12 +2,12 @@
 
 namespace Boy132\MclogsUploader\Filament\Components\Actions;
 
+use Filament\Support\Enums\Size;
 use App\Models\Server;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\ActionSize;
 use Illuminate\Support\Facades\Http;
 
 class UploadLogsAction extends Action
@@ -34,7 +34,7 @@ class UploadLogsAction extends Action
 
         $this->color('primary');
 
-        $this->size(ActionSize::ExtraLarge);
+        $this->size(Size::ExtraLarge);
 
         $this->action(function () {
             /** @var Server $server */

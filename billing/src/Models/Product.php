@@ -18,8 +18,8 @@ use Stripe\StripeClient;
  * @property int $memory
  * @property int $disk
  * @property int $swap
- * @property array $ports
- * @property array $tags
+ * @property array<int|string> $ports
+ * @property string[] $tags
  * @property int $allocation_limit
  * @property int $database_limit
  * @property int $backup_limit

@@ -4,9 +4,9 @@ namespace Boy132\UserCreatableServers\Providers;
 
 use App\Enums\HeaderActionPosition;
 use App\Enums\HeaderWidgetPosition;
-use App\Filament\Admin\Resources\UserResource;
-use App\Filament\App\Resources\ServerResource\Pages\ListServers;
-use Boy132\UserCreatableServers\Filament\Admin\Resources\UserResource\RelationManagers\UserResourceLimitRelationManager;
+use App\Filament\Admin\Resources\Users\UserResource;
+use App\Filament\App\Resources\Servers\Pages\ListServers;
+use Boy132\UserCreatableServers\Filament\Admin\Resources\Users\RelationManagers\UserResourceLimitRelationManager;
 use Boy132\UserCreatableServers\Filament\App\Widgets\UserResourceLimitsOverview;
 use Boy132\UserCreatableServers\Filament\Components\Actions\CreateServerAction;
 use Illuminate\Support\ServiceProvider;

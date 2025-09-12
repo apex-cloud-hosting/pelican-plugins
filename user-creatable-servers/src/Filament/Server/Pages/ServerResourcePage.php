@@ -2,6 +2,7 @@
 
 namespace Boy132\UserCreatableServers\Filament\Server\Pages;
 
+use Filament\Schemas\Schema;
 use App\Filament\Server\Pages\ServerFormPage;
 use App\Models\Server;
 use App\Repositories\Daemon\DaemonServerRepository;
@@ -10,14 +11,13 @@ use Boy132\UserCreatableServers\Models\UserResourceLimits;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Http\Client\ConnectionException;
 
 class ServerResourcePage extends ServerFormPage
 {
-    protected static ?string $navigationIcon = 'tabler-cube-plus';
+    protected static string|\BackedEnum|null $navigationIcon = 'tabler-cube-plus';
 
     protected static ?string $navigationLabel = 'Resource Limits';
 
@@ -41,7 +41,7 @@ class ServerResourcePage extends ServerFormPage
 
     protected static ?int $navigationSort = 20;
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         /** @var Server $server */
         $server = Filament::getTenant();
@@ -55,7 +55,7 @@ class ServerResourcePage extends ServerFormPage
 
         $suffix = config('panel.use_binary_prefix') ? 'MiB' : 'MB';
 
-        return $form
+        return $schema
             ->columns([
                 'default' => 1,
                 'lg' => 3,

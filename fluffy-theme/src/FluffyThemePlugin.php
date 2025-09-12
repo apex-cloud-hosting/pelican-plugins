@@ -19,7 +19,7 @@ class FluffyThemePlugin implements Plugin
             ->font('Finger Paint')
             ->colors([
                 'danger' => Color::Rose,
-                'gray' => Color::hex('#b974c3'), // Fuchsia but desaturated
+                'gray' => Color::generateV3Palette('#b974c3'), // Fuchsia but desaturated
                 'info' => Color::Violet,
                 'primary' => Color::Indigo,
                 'success' => Color::Teal,

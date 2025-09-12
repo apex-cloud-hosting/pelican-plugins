@@ -2,9 +2,9 @@
 
 namespace Boy132\Tickets\Filament\Components\Actions;
 
+use Filament\Actions\Action;
 use Boy132\Tickets\Models\Ticket;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\Action;
 
 class AssignToMeAction extends Action
 {

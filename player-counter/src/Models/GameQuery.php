@@ -2,6 +2,7 @@
 
 namespace Boy132\PlayerCounter\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use App\Models\Allocation;
 use App\Models\Egg;
 use Exception;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property int $id
  * @property string $query_type
  * @property ?int $query_port_offset
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Egg[] $eggs
+ * @property Collection|Egg[] $eggs
  * @property int|null $eggs_count
  */
 class GameQuery extends Model

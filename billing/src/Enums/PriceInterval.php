@@ -11,7 +11,7 @@ enum PriceInterval: string implements HasLabel
     case Month = 'month';
     case Year = 'year';
 
-    public function getLabel(): ?string
+    public function getLabel(): string
     {
         return $this->name;
     }
