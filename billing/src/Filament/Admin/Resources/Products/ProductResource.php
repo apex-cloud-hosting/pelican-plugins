@@ -41,6 +41,7 @@ class ProductResource extends Resource
                 Textarea::make('description')
                     ->autosize(),
                 Fieldset::make('Server')
+                    ->columnSpanFull()
                     ->schema([
                         Select::make('egg_id')
                             ->prefixIcon('tabler-egg')
@@ -81,12 +82,14 @@ class ProductResource extends Resource
                             ->hint('Set to -1 for unlimited or 0 for no swap.'),
                     ]),
                 Fieldset::make('Deployment')
+                    ->columnSpanFull()
                     ->columns(2)
                     ->schema([
                         TagsInput::make('ports'),
                         TagsInput::make('tags'),
                     ]),
                 Fieldset::make('Limits')
+                    ->columnSpanFull()
                     ->columns(3)
                     ->schema([
                         TextInput::make('allocation_limit')

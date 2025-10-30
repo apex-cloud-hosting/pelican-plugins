@@ -38,6 +38,7 @@ class CustomerResource extends Resource
                     ->prefixIcon('tabler-user')
                     ->label('User')
                     ->required()
+                    ->selectablePlaceholder(false)
                     ->relationship('user', 'username')
                     ->searchable(['username', 'email'])
                     ->getOptionLabelFromRecordUsing(fn (User $user) => $user->email . ' | ' . $user->username)

@@ -14,7 +14,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use NumberFormatter;
 
 /**
  * @method Product getOwnerRecord()
@@ -27,14 +26,19 @@ class PriceRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                TextInput::make('name'),
+                TextInput::make('name')
+                    ->required(),
                 TextInput::make('cost')
+                    ->required()
                     ->suffix(config('billing.currency'))
                     ->numeric()
                     ->minValue(0),
                 Select::make('interval_type')
+                    ->required()
+                    ->selectablePlaceholder(false)
                     ->options(PriceInterval::class),
                 TextInput::make('interval_value')
+                    ->required()
                     ->numeric()
                     ->minValue(1),
             ]);
@@ -48,11 +52,7 @@ class PriceRelationManager extends RelationManager
                     ->sortable(),
                 TextColumn::make('cost')
                     ->sortable()
-                    ->formatStateUsing(function ($state) {
-                        $formatter = new NumberFormatter(auth()->user()->language, NumberFormatter::CURRENCY);
-
-                        return $formatter->formatCurrency($state, config('billing.currency'));
-                    }),
+                    ->state(fn (ProductPrice $price) => $price->formatCost()),
                 TextColumn::make('interval')
                     ->state(fn (ProductPrice $price) => $price->interval_value . ' ' . $price->interval_type->name),
             ])

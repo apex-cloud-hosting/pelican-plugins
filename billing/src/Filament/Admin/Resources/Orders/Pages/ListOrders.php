@@ -33,7 +33,7 @@ class ListOrders extends ListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', OrderStatus::Closed))
                 ->badge(fn () => Order::where('status', OrderStatus::Closed)->count()),
 
-            'all' => Tab::make(trans('tickets::tickets.all'))
+            'all' => Tab::make('All')
                 ->badge(fn () => Order::count()),
         ];
     }

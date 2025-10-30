@@ -5,6 +5,7 @@ namespace Boy132\Billing\Models;
 use Boy132\Billing\Enums\PriceInterval;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use NumberFormatter;
 use Stripe\StripeClient;
 
 /**
@@ -72,5 +73,12 @@ class ProductPrice extends Model
                 'unit_amount' => $this->cost,
             ]);
         }
+    }
+
+    public function formatCost(): string
+    {
+        $formatter = new NumberFormatter(user()?->language ?? 'en', NumberFormatter::CURRENCY);
+
+        return $formatter->formatCurrency($this->cost, config('billing.currency'));
     }
 }

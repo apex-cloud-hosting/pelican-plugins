@@ -24,6 +24,12 @@ class BillingPlugin implements HasPluginSettings, Plugin
         $id = str($panel->getId())->title();
 
         $panel->discoverResources(plugin_path($this->getId(), "src/Filament/$id/Resources"), "Boy132\\Billing\\Filament\\$id\\Resources");
+        $panel->discoverPages(plugin_path($this->getId(), "src/Filament/$id/Pages"), "Boy132\\Billing\\Filament\\$id\\Pages");
+        $panel->discoverWidgets(plugin_path($this->getId(), "src/Filament/$id/Widgets"), "Boy132\\Billing\\Filament\\$id\\Widgets");
+
+        if ($panel->getId() === 'app') {
+            $panel->path('app');
+        }
     }
 
     public function boot(Panel $panel): void {}
