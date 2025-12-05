@@ -52,7 +52,7 @@ Adds a button to the console for uploading console logs to [mclo.gs](https://mcl
 
 ### [Minecraft Modrinth](/minecraft-modrinth) <sup><sub>by Boy132</sub></sup>
 
-Allows to easily download mods & plugins from modrinth.
+Allows to easily download minecraft mods & plugins from modrinth.
 
 ---
 
@@ -86,6 +86,12 @@ Enables registration on all panels.
 ### [Robo Avatars](/robo-avatars) <sup><sub>by Boy132</sub></sup>
 
 Adds [RoboHash](https://robohash.org/) as avatar provider.
+
+---
+
+### [Rust uMod](/rust-umod) <sup><sub>by Boy132</sub></sup>
+
+Allows to easily download rust plugins from uMod.
 
 ---
 
