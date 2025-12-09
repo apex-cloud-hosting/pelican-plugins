@@ -10,7 +10,8 @@ return new class extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
-            $table->string('stripe_id')->nullable();
+            $table->string('stripe_coupon_id')->nullable();
+            $table->string('stripe_promotion_id')->nullable();
             $table->string('name');
             $table->string('code')->unique();
             $table->integer('amount_off')->nullable();

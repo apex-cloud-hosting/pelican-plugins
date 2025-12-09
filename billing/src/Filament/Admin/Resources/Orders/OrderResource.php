@@ -50,7 +50,7 @@ class OrderResource extends Resource
                     ->required()
                     ->selectablePlaceholder(false)
                     ->relationship('productPrice')
-                    ->getOptionLabelFromRecordUsing(fn (ProductPrice $productPrice) => $productPrice->product->name . ' (' . $productPrice->getLabel() . ')')
+                    ->getOptionLabelFromRecordUsing(fn (ProductPrice $productPrice) => $productPrice->product->getLabel() . ' (' . $productPrice->getLabel() . ')')
                     ->preload(),
             ]);
     }
@@ -59,6 +59,9 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
                 TextColumn::make('status')
                     ->sortable()
                     ->badge()
@@ -102,11 +105,11 @@ class OrderResource extends Resource
                     ->color('success')
                     ->requiresConfirmation()
                     ->action(function (Order $order) {
-                        $order->activate();
+                        $order->activate(null);
 
                         Notification::make()
                             ->title('Order activated')
-                            ->body("Order #{$order->id}")
+                            ->body($order->getLabel())
                             ->success()
                             ->send();
                     }),
@@ -135,7 +138,7 @@ class OrderResource extends Resource
 
                         Notification::make()
                             ->title('Order closed')
-                            ->body("Order #{$order->id}")
+                            ->body($order->getLabel())
                             ->success()
                             ->send();
                     }),

@@ -14,7 +14,8 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('stripe_id')->nullable();
+            $table->string('stripe_checkout_id')->nullable();
+            $table->string('stripe_payment_id')->nullable();
             $table->string('status')->default(OrderStatus::Pending);
             $table->timestamp('expires_at')->nullable();
             $table->foreignIdFor(Customer::class)->constrained()->cascadeOnDelete();

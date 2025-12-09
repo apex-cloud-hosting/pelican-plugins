@@ -31,7 +31,7 @@ class ProductWidget extends Widget implements HasActions, HasSchemas
         $actions = [];
 
         foreach ($this->product->prices as $price) {
-            $actions[] = Action::make($price->name)
+            $actions[] = Action::make(str_slug($price->name))
                 ->label($price->getLabel())
                 ->action(function () use ($price) {
                     $price->sync();
@@ -55,7 +55,7 @@ class ProductWidget extends Widget implements HasActions, HasSchemas
             ->record($this->product)
             ->components([
                 Section::make()
-                    ->heading($this->product->name)
+                    ->heading($this->product->getLabel())
                     ->description($this->product->description)
                     ->columns(6)
                     ->schema([

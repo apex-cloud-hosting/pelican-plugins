@@ -9,7 +9,8 @@ use Stripe\StripeClient;
 
 /**
  * @property int $id
- * @property ?string $stripe_id
+ * @property ?string $stripe_coupon_id
+ * @property ?string $stripe_promotion_id
  * @property string $name
  * @property string $code
  * @property ?int $amount_off
@@ -20,7 +21,8 @@ use Stripe\StripeClient;
 class Coupon extends Model
 {
     protected $fillable = [
-        'stripe_id',
+        'stripe_coupon_id',
+        'stripe_promotion_id',
         'name',
         'code',
         'amount_off',
@@ -50,11 +52,12 @@ class Coupon extends Model
         });
 
         static::deleted(function (self $model) {
-            if (!is_null($model->stripe_id)) {
+            if (!is_null($model->stripe_coupon_id)) {
                 /** @var StripeClient $stripeClient */
                 $stripeClient = app(StripeClient::class); // @phpstan-ignore myCustomRules.forbiddenGlobalFunctions
 
-                $stripeClient->coupons->delete($model->stripe_id);
+                $stripeClient->coupons->delete($model->stripe_coupon_id);
+                $stripeClient->coupons->delete($model->stripe_promotion_id);
             }
         });
     }
@@ -64,10 +67,9 @@ class Coupon extends Model
         /** @var StripeClient $stripeClient */
         $stripeClient = app(StripeClient::class); // @phpstan-ignore myCustomRules.forbiddenGlobalFunctions
 
-        if (is_null($this->stripe_id)) {
+        if (is_null($this->stripe_coupon_id)) {
             $data = [
                 'name' => $this->name,
-                'id' => $this->code,
             ];
 
             if ($this->amount_off) {
@@ -89,17 +91,27 @@ class Coupon extends Model
 
             $stripeCoupon = $stripeClient->coupons->create($data);
 
+            $stripePromotionCode = $stripeClient->promotionCodes->create([
+                'code' => $this->code,
+                'promotion' => [
+                    'type' => 'coupon',
+                    'coupon' => $stripeCoupon->id,
+                ],
+            ]);
+
             $this->updateQuietly([
-                'stripe_id' => $stripeCoupon->id,
+                'stripe_coupon_id' => $stripeCoupon->id,
+                'stripe_promotion_id' => $stripePromotionCode->id,
             ]);
         } else {
-            $stripeCoupon = $stripeClient->coupons->retrieve($this->stripe_id);
+            $stripeCoupon = $stripeClient->coupons->retrieve($this->stripe_coupon_id);
 
             // You can't update coupon objects on stripe, so check for changes and recreate the coupon if needed
             if ($stripeCoupon->amount_off !== $this->amount_off || $stripeCoupon->percent_off !== $this->percent_off || $stripeCoupon->max_redemptions !== $this->max_redemptions || $stripeCoupon->redeem_by !== $this->redeem_by) {
-                $stripeClient->coupons->delete($this->stripe_id);
+                $stripeClient->coupons->delete($this->stripe_coupon_id);
+                $stripeClient->coupons->delete($this->stripe_promotion_id);
 
-                $this->stripe_id = null;
+                $this->stripe_coupon_id = null;
                 $this->sync();
             }
         }

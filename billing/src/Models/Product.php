@@ -3,6 +3,7 @@
 namespace Boy132\Billing\Models;
 
 use App\Models\Egg;
+use Filament\Support\Contracts\HasLabel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,7 +28,7 @@ use Stripe\StripeClient;
  * @property Egg $egg
  * @property Collection|ProductPrice[] $prices
  */
-class Product extends Model
+class Product extends Model implements HasLabel
 {
     protected $fillable = [
         'stripe_id',
@@ -88,6 +89,11 @@ class Product extends Model
     public function egg(): BelongsTo
     {
         return $this->BelongsTo(Egg::class, 'egg_id');
+    }
+
+    public function getLabel(): string
+    {
+        return $this->name;
     }
 
     public function sync(): void

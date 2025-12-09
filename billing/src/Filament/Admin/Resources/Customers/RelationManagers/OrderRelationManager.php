@@ -8,7 +8,9 @@ use Boy132\Billing\Enums\OrderStatus;
 use Boy132\Billing\Filament\Admin\Resources\Products\Pages\EditProduct;
 use Boy132\Billing\Models\Customer;
 use Boy132\Billing\Models\Order;
+use Exception;
 use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -25,6 +27,9 @@ class OrderRelationManager extends RelationManager
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
                 TextColumn::make('status')
                     ->sortable()
                     ->badge(),
@@ -61,14 +66,47 @@ class OrderRelationManager extends RelationManager
                     ->visible(fn (Order $order) => $order->status !== OrderStatus::Active)
                     ->color('success')
                     ->requiresConfirmation()
-                    ->action(fn (Order $order) => $order->activate()),
+                    ->action(function (Order $order) {
+                        $order->activate(null);
+
+                        Notification::make()
+                            ->title('Order activated')
+                            ->body($order->getLabel())
+                            ->success()
+                            ->send();
+                    }),
+                Action::make('create_server')
+                    ->visible(fn (Order $order) => $order->status === OrderStatus::Active && !$order->server)
+                    ->color('primary')
+                    ->requiresConfirmation()
+                    ->action(function (Order $order) {
+                        try {
+                            $order->createServer();
+                        } catch (Exception $exception) {
+                            Notification::make()
+                                ->title('Could not create server')
+                                ->body($exception->getMessage())
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                        }
+                    }),
                 Action::make('close')
                     ->visible(fn (Order $order) => $order->status === OrderStatus::Active)
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->action(fn (Order $order) => $order->close()),
+                    ->action(function (Order $order) {
+                        $order->close();
+
+                        Notification::make()
+                            ->title('Order closed')
+                            ->body($order->getLabel())
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->emptyStateHeading('No Orders')
-            ->emptyStateDescription('');
+            ->emptyStateDescription('')
+            ->emptyStateIcon('tabler-truck-delivery');
     }
 }

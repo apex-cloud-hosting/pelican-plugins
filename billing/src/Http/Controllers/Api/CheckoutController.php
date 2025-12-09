@@ -33,13 +33,13 @@ class CheckoutController extends Controller
         }
 
         /** @var ?Order $order */
-        $order = Order::where('stripe_id', $session->id)->first();
+        $order = Order::where('stripe_checkout_id', $session->id)->first();
 
         if (!$order) {
             return redirect(ListOrders::getUrl(panel: 'app'));
         }
 
-        $order->activate();
+        $order->activate($session->payment_intent);
         $order->refresh();
 
         return redirect(Console::getUrl(panel: 'server', tenant: $order->server));
@@ -51,7 +51,7 @@ class CheckoutController extends Controller
 
         if ($sessionId) {
             /** @var ?Order $order */
-            $order = Order::where('stripe_id', $sessionId)->first();
+            $order = Order::where('stripe_checkout_id', $sessionId)->first();
             $order?->close();
         }
 

@@ -10,6 +10,7 @@ use App\Services\Servers\SuspensionService;
 use Boy132\Billing\Enums\OrderStatus;
 use Boy132\Billing\Enums\PriceInterval;
 use Exception;
+use Filament\Support\Contracts\HasLabel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -18,7 +19,8 @@ use Stripe\StripeClient;
 
 /**
  * @property int $id
- * @property ?string $stripe_id
+ * @property ?string $stripe_checkout_id
+ * @property ?string $stripe_payment_id
  * @property OrderStatus $status
  * @property ?Carbon $expires_at
  * @property int $customer_id
@@ -28,10 +30,11 @@ use Stripe\StripeClient;
  * @property ?int $server_id
  * @property ?Server $server
  */
-class Order extends Model
+class Order extends Model implements HasLabel
 {
     protected $fillable = [
-        'stripe_id',
+        'stripe_checkout_id',
+        'stripe_payment_id',
         'status',
         'expires_at',
         'customer_id',
@@ -62,6 +65,11 @@ class Order extends Model
         return $this->BelongsTo(Server::class, 'server_id');
     }
 
+    public function getLabel(): string
+    {
+        return "Order #{$this->id}";
+    }
+
     public function checkExpire(): bool
     {
         if ($this->status === OrderStatus::Active && !is_null($this->expires_at) && now('UTC') >= $this->expires_at) {
@@ -76,7 +84,7 @@ class Order extends Model
             $this->expireCheckoutSession();
 
             $this->update([
-                'stripe_id' => null,
+                'stripe_checkout_id' => null,
                 'status' => OrderStatus::Expired,
             ]);
 
@@ -88,11 +96,11 @@ class Order extends Model
 
     private function expireCheckoutSession(): void
     {
-        if (!is_null($this->stripe_id)) {
+        if (!is_null($this->stripe_checkout_id)) {
             /** @var StripeClient $stripeClient */
             $stripeClient = app(StripeClient::class); // @phpstan-ignore myCustomRules.forbiddenGlobalFunctions
 
-            $session = $stripeClient->checkout->sessions->retrieve($this->stripe_id);
+            $session = $stripeClient->checkout->sessions->retrieve($this->stripe_checkout_id);
 
             if ($session->status === Session::STATUS_OPEN) {
                 $stripeClient->checkout->sessions->expire($session->id);
@@ -105,7 +113,7 @@ class Order extends Model
         /** @var StripeClient $stripeClient */
         $stripeClient = app(StripeClient::class); // @phpstan-ignore myCustomRules.forbiddenGlobalFunctions
 
-        if (is_null($this->stripe_id)) {
+        if (is_null($this->stripe_checkout_id)) {
             $session = $stripeClient->checkout->sessions->create([
                 'customer_email' => $this->customer->user->email,
                 'success_url' => route('billing.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
@@ -118,19 +126,26 @@ class Order extends Model
                 ],
                 'mode' => 'payment',
                 'allow_promotion_codes' => true,
+                'branding_settings' => [
+                    'display_name' => config('app.name'),
+                    'logo' => [
+                        'type' => 'url',
+                        'url' => asset(config('app.logo') ?? 'pelican.svg'),
+                    ],
+                ],
             ]);
 
             $this->update([
-                'stripe_id' => $session->id,
+                'stripe_checkout_id' => $session->id,
             ]);
 
             return $session;
         }
 
-        return $stripeClient->checkout->sessions->retrieve($this->stripe_id);
+        return $stripeClient->checkout->sessions->retrieve($this->stripe_checkout_id);
     }
 
-    public function activate(): void
+    public function activate(?string $stripePaymentId): void
     {
         $expireDate = match ($this->productPrice->interval_type) {
             PriceInterval::Day => now('UTC')->addDays($this->productPrice->interval_value),
@@ -142,7 +157,8 @@ class Order extends Model
         $this->expireCheckoutSession();
 
         $this->update([
-            'stripe_id' => null,
+            'stripe_checkout_id' => null,
+            'stripe_payment_id' => $stripePaymentId,
             'status' => OrderStatus::Active,
             'expires_at' => $expireDate,
         ]);
@@ -171,7 +187,7 @@ class Order extends Model
         $this->expireCheckoutSession();
 
         $this->update([
-            'stripe_id' => null,
+            'stripe_checkout_id' => null,
             'status' => OrderStatus::Closed,
         ]);
     }
@@ -190,7 +206,7 @@ class Order extends Model
         }
 
         $data = [
-            'name' => 'Order #' . $this->id,
+            'name' => $this->getLabel() . ' (' . $this->productPrice->product->getLabel() . ')',
             'owner_id' => $this->customer->user->id,
             'egg_id' => $product->egg->id,
             'cpu' => $product->cpu,
