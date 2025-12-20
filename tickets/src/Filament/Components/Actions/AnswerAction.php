@@ -28,7 +28,7 @@ class AnswerAction extends Action
 
         $this->color('primary');
 
-        $this->form([
+        $this->schema([
             MarkdownEditor::make('answer')
                 ->required()
                 ->hiddenLabel(),

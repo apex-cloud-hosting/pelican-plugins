@@ -75,8 +75,8 @@ class Ticket extends Model
 
         $this->save();
 
-        // Send notification to author if exisiting and is the owner or a subuser of the server
-        if ($this->author && $this->author->directAccessibleServers()->where('id', $this->server->id)->exists()) {
+        // Send notification to author if existing and is the owner or a subuser of the server
+        if ($this->author && collect($this->author->directAccessibleServers()->pluck('id')->all())->contains($this->server->id)) {
             Notification::make()
                 ->title(trans('tickets::tickets.notifications.answered'))
                 ->body(Markdown::inline($this->answer))
