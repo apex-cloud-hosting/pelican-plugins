@@ -86,6 +86,8 @@ class SubdomainRelationManager extends RelationManager
                     ->createAnother(false)
                     ->action(function (array $data, SubdomainService $service) {
                         try {
+                            $data['server_id'] = $this->getOwnerRecord()->id;
+
                             return $service->handle($data);
                         } catch (Exception $exception) {
                             Notification::make()

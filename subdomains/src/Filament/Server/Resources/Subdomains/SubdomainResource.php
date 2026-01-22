@@ -115,6 +115,11 @@ class SubdomainResource extends Resource
                     ->iconSize(IconSize::ExtraLarge)
                     ->action(function (array $data, SubdomainService $service) {
                         try {
+                            /** @var Server $server */
+                            $server = Filament::getTenant();
+
+                            $data['server_id'] = $server->id;
+
                             return $service->handle($data);
                         } catch (Exception $exception) {
                             Notification::make()
