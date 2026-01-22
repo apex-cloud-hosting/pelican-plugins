@@ -24,7 +24,7 @@ class ManageCloudflareDomains extends ManageRecords
                         return CloudflareDomain::create($data);
                     } catch (Exception $exception) {
                         Notification::make()
-                            ->title(trans('subdomains::strings.not_synced'))
+                            ->title(trans('subdomains::strings.notifications.not_synced'))
                             ->body($exception->getMessage())
                             ->warning()
                             ->persistent()

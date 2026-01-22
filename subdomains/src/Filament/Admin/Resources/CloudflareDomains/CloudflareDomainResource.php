@@ -76,12 +76,12 @@ class CloudflareDomainResource extends Resource
                             $domain->fetchCloudflareId();
 
                             Notification::make()
-                                ->title(trans('subdomains::strings.synced'))
+                                ->title(trans('subdomains::strings.notifications.synced'))
                                 ->success()
                                 ->send();
                         } catch (Exception $exception) {
                             Notification::make()
-                                ->title(trans('subdomains::strings.not_synced'))
+                                ->title(trans('subdomains::strings.notifications.not_synced'))
                                 ->body($exception->getMessage())
                                 ->danger()
                                 ->persistent()
