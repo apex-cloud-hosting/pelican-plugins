@@ -21,7 +21,7 @@ class ServerPlayerWidget extends StatsOverviewWidget
             return false;
         }
 
-        if (!$server->allocation || $server->allocation->ip === '0.0.0.0' || $server->allocation->ip === '::') {
+        if (!GameQuery::canRunQuery($server->allocation)) {
             return false;
         }
 
@@ -45,12 +45,12 @@ class ServerPlayerWidget extends StatsOverviewWidget
             return [];
         }
 
-        $data = $gameQuery->runQuery($server->allocation);
+        $data = $gameQuery->runQuery($server->allocation) ?? [];
 
         return [
-            SmallStatBlock::make(trans('player-counter::query.hostname'), $data['gq_hostname'] ?? trans('player-counter::query.unknown')),
-            SmallStatBlock::make(trans('player-counter::query.players'), ($data['gq_numplayers'] ?? '?') . ' / ' . ($data['gq_maxplayers'] ?? '?')),
-            SmallStatBlock::make(trans('player-counter::query.map'), $data['gq_mapname'] ?? trans('player-counter::query.unknown')),
+            SmallStatBlock::make(trans('player-counter::query.hostname'), $data['hostname'] ?? trans('player-counter::query.unknown')),
+            SmallStatBlock::make(trans('player-counter::query.players'), ($data['current_players'] ?? '?') . ' / ' . ($data['max_players'] ?? '?')),
+            SmallStatBlock::make(trans('player-counter::query.map'), $data['map'] ?? trans('player-counter::query.unknown')),
         ];
     }
 }
