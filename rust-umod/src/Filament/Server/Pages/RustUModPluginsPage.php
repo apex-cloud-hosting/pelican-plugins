@@ -97,6 +97,8 @@ class RustUModPluginsPage extends Page implements HasTable
             ->recordUrl(fn (array $record) => $record['url'], true)
             ->recordActions([
                 Action::make('download')
+                    ->tooltip('Download')
+                    ->icon('tabler-download')
                     ->action(function (array $record, DaemonFileRepository $fileRepository) {
                         try {
                             /** @var Server $server */

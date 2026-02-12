@@ -28,6 +28,8 @@ class UploadLogsAction extends Action
             return $server->retrieveStatus()->isOffline();
         });
 
+        $this->hiddenLabel();
+
         $this->tooltip(fn () => trans('mclogs-uploader::upload.upload_logs'));
 
         $this->icon('tabler-upload');

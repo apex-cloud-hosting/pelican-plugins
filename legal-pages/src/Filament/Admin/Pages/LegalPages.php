@@ -76,12 +76,12 @@ class LegalPages extends Page
                 ->label($legalPageType->getLabel())
                 ->disabled(fn () => !user()?->can('update legalPage'))
                 ->hintActions([
-                    Action::make('view')
+                    Action::make('hint_view')
                         ->label(trans('filament-actions::view.single.label'))
                         ->icon('tabler-eye')
                         ->url($legalPageType->getUrl(), true)
                         ->visible(fn (Get $get) => $get($legalPageType->getId())),
-                    Action::make('clear')
+                    Action::make('hint_clear')
                         ->label(trans('legal-pages::strings.clear'))
                         ->authorize(fn () => user()?->can('update legalPage'))
                         ->color('danger')
