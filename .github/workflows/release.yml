@@ -1,0 +1,51 @@
+name: Release Plugins
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Zip and Release Plugins
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Find plugin folders and create zips
+        id: zip
+        run: |
+          mkdir -p artifacts
+
+          plugins=""
+          for plugin_json in $(find . -maxdepth 2 -name "plugin.json" -type f); do
+            dir=$(dirname "$plugin_json")
+            folder=$(basename "$dir")
+            echo "Zipping $folder..."
+            (cd "$dir" && zip -r "../artifacts/${folder}.zip" .)
+            plugins="${plugins}${folder}\n"
+          done
+
+          echo -e "$plugins" > artifacts/plugins_list.txt
+
+      - name: Generate tag
+        id: tag
+        run: |
+          tag="release-$(date +'%Y%m%d-%H%M%S')-$(echo ${GITHUB_SHA} | cut -c1-7)"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Plugins Release ${{ steps.tag.outputs.tag }}
+          body: |
+            Automated release of all plugins.
+
+            Commit: ${{ github.sha }}
+          files: artifacts/*.zip
