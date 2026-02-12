@@ -97,6 +97,8 @@ class RustUModPluginsPage extends Page implements HasTable
             ->recordUrl(fn (array $record) => $record['url'], true)
             ->recordActions([
                 Action::make('download')
+                    ->tooltip('Download')
+                    ->icon('tabler-download')
                     ->action(function (array $record, DaemonFileRepository $fileRepository) {
                         try {
                             /** @var Server $server */
@@ -126,7 +128,8 @@ class RustUModPluginsPage extends Page implements HasTable
     {
         return [
             Action::make('open_folder')
-                ->label(fn () => 'Open plugins folder')
+                ->tooltip(fn () => 'Open plugins folder')
+                ->icon('tabler-folder-open')
                 ->url(fn () => ListFiles::getUrl(['path' => 'oxide/plugins']), true),
         ];
     }

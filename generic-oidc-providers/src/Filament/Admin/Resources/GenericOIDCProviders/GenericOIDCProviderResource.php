@@ -2,6 +2,7 @@
 
 namespace Boy132\GenericOIDCProviders\Filament\Admin\Resources\GenericOIDCProviders;
 
+use App\Enums\TablerIcon;
 use Boy132\GenericOIDCProviders\Filament\Admin\Resources\GenericOIDCProviders\Pages\CreateGenericOIDCProvider;
 use Boy132\GenericOIDCProviders\Filament\Admin\Resources\GenericOIDCProviders\Pages\EditGenericOIDCProvider;
 use Boy132\GenericOIDCProviders\Filament\Admin\Resources\GenericOIDCProviders\Pages\ListGenericOIDCProviders;
@@ -10,6 +11,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -82,9 +84,12 @@ class GenericOIDCProviderResource extends Resource
                     ->label(trans('generic-oidc-providers::strings.display_color'))
                     ->placeholder('Default color')
                     ->hex(),
-                TextInput::make('display_icon')
+                Select::make('display_icon')
                     ->label(trans('generic-oidc-providers::strings.display_icon'))
-                    ->placeholder('tabler-brand-oauth'),
+                    ->live()
+                    ->options(TablerIcon::class)
+                    ->suffixIcon(fn ($state) => $state)
+                    ->searchable(),
                 TextInput::make('base_url')
                     ->label(trans('generic-oidc-providers::strings.base_url'))
                     ->required()
