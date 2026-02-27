@@ -26,6 +26,7 @@ npm i -g yarn
 - [Legal Pages](/legal-pages) - Adds legal pages (Imprint, Privacy Policy, ToS) to the panel
 - [MCLogs Uploader](/mclogs-uploader) - Upload console logs to mclo.gs
 - [Minecraft Modrinth](/minecraft-modrinth) - Download Minecraft mods & plugins from Modrinth
+- [Paymenter Auth Connector](/paymenter-auth-connector) - Adds Paymenter as an OAuth provider
 - [PasteFox Share](/pastefox-share) - Share console logs via pastefox.com
 - [Player Counter](/player-counter) - Show connected players count for game servers
 - [PocketID Provider](/pocketid-provider) - Allows you to use PocketID as an OAuth provider

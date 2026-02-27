@@ -1,0 +1,15 @@
+{
+    "id": "paymenter-auth-connector",
+    "name": "Paymenter Auth Connector",
+    "author": "Opencode",
+    "version": "1.0.1",
+    "description": "Adds Paymenter as an OAuth provider.",
+    "category": "plugin",
+    "url": "https://github.com/pelican-dev/plugins/tree/main/paymenter-auth-connector",
+    "update_url": null,
+    "namespace": "OpenCode\\PaymenterAuthConnector",
+    "class": "PaymenterAuthConnectorPlugin",
+    "panels": null,
+    "panel_version": null,
+    "composer_packages": null
+}
