@@ -6,7 +6,6 @@ use App\Filament\Admin\Resources\Users\Pages\EditUser;
 use App\Models\User;
 use Boy132\UserCreatableServers\Filament\Admin\Resources\UserResourceLimits\Pages\ManageUserResourceLimits;
 use Boy132\UserCreatableServers\Models\UserResourceLimits;
-use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -73,12 +72,10 @@ class UserResourceLimitsResource extends Resource
                     ->formatStateUsing(fn ($state) => $state > 0 ? $state . $suffix : trans('user-creatable-servers::strings.unlimited')),
             ])
             ->recordActions([
-                ActionGroup::make([
-                    ViewAction::make()
-                        ->hidden(fn ($record) => static::canEdit($record)),
-                    EditAction::make(),
-                    DeleteAction::make(),
-                ]),
+                ViewAction::make()
+                    ->hidden(fn ($record) => static::canEdit($record)),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->emptyStateIcon('tabler-cube-plus')
             ->emptyStateDescription('');

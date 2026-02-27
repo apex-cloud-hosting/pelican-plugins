@@ -164,8 +164,9 @@ class PlayersPage extends Page implements HasTable
                 ]),
             ])
             ->recordActions([
-                Action::make('kick')
+                Action::make('exclude_kick')
                     ->visible(fn () => $isMinecraft)
+                    ->label(trans('player-counter::query.kick'))
                     ->icon('tabler-door-exit')
                     ->color('danger')
                     ->action(function (array $record) {
@@ -192,7 +193,7 @@ class PlayersPage extends Page implements HasTable
                                 ->send();
                         }
                     }),
-                Action::make('whitelist')
+                Action::make('exclude_whitelist')
                     ->visible(fn () => $isMinecraft)
                     ->label(fn (array $record) => in_array($record['name'], $whitelist) ? trans('player-counter::query.remove_from_whitelist') : trans('player-counter::query.add_to_whitelist'))
                     ->icon(fn (array $record) => in_array($record['name'], $whitelist) ? 'tabler-playlist-x' : 'tabler-playlist-add')
@@ -223,7 +224,7 @@ class PlayersPage extends Page implements HasTable
                                 ->send();
                         }
                     }),
-                Action::make('op')
+                Action::make('exclude_op')
                     ->visible(fn () => $isMinecraft)
                     ->label(fn (array $record) => in_array($record['name'], $ops) ? trans('player-counter::query.remove_from_ops') : trans('player-counter::query.add_to_ops'))
                     ->icon(fn (array $record) => in_array($record['name'], $ops) ? 'tabler-shield-minus' : 'tabler-shield-plus')

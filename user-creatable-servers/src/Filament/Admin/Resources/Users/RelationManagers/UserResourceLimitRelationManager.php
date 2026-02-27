@@ -3,7 +3,6 @@
 namespace Boy132\UserCreatableServers\Filament\Admin\Resources\Users\RelationManagers;
 
 use Boy132\UserCreatableServers\Filament\Admin\Resources\UserResourceLimits\UserResourceLimitsResource;
-use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -29,29 +28,29 @@ class UserResourceLimitRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        $suffix = config('panel.use_binary_prefix') ? ' MiB' : ' MB';
+
         return $table
             ->heading(trans_choice('user-creatable-servers::strings.user_resource_limits', 2))
             ->columns([
                 TextColumn::make('cpu')
                     ->label(trans('user-creatable-servers::strings.cpu'))
                     ->badge()
-                    ->suffix('%'),
+                    ->formatStateUsing(fn ($state) => $state > 0 ? $state . '%' : trans('user-creatable-servers::strings.unlimited')),
                 TextColumn::make('memory')
                     ->label(trans('user-creatable-servers::strings.memory'))
                     ->badge()
-                    ->suffix(config('panel.use_binary_prefix') ? ' MiB' : ' MB'),
+                    ->formatStateUsing(fn ($state) => $state > 0 ? $state . $suffix : trans('user-creatable-servers::strings.unlimited')),
                 TextColumn::make('disk')
                     ->label(trans('user-creatable-servers::strings.disk'))
                     ->badge()
-                    ->suffix(config('panel.use_binary_prefix') ? ' MiB' : ' MB'),
+                    ->formatStateUsing(fn ($state) => $state > 0 ? $state . $suffix : trans('user-creatable-servers::strings.unlimited')),
             ])
             ->recordActions([
-                ActionGroup::make([
-                    ViewAction::make()
-                        ->hidden(fn ($record) => static::canEdit($record)),
-                    EditAction::make(),
-                    DeleteAction::make(),
-                ]),
+                ViewAction::make()
+                    ->hidden(fn ($record) => static::canEdit($record)),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->emptyStateIcon('tabler-cube-plus')
             ->emptyStateDescription('');

@@ -21,7 +21,7 @@ class AssignToMeAction extends Action
 
         $this->hidden(fn (Ticket $ticket) => $ticket->assignedUser);
 
-        $this->label(trans('tickets::tickets.assign_to_me'));
+        $this->tooltip(trans('tickets::tickets.assign_to_me'));
 
         $this->icon('tabler-user-share');
 

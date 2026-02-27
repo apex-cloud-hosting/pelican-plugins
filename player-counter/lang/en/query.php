@@ -13,6 +13,8 @@ return [
     'map' => 'Map',
     'unknown' => 'Unknown',
 
+    'kick' => 'Kick',
+
     'whitelisted' => 'Whitelisted',
     'add_to_whitelist' => 'Add to whitelist',
     'remove_from_whitelist' => 'Remove from whitelist',
